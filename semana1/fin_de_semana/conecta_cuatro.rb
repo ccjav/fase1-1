@@ -13,6 +13,7 @@ class ConectFour
 	def drop_chip!(player)
 		puts "columna:"
 		column = gets.chomp.to_i
+		if column == 1 then column = 1 else column = (column * 2) + (column - 2) end
 		while @board[column] == " "
 			if @board[column + 22] == " "
 				column += 22
