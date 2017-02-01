@@ -1,9 +1,10 @@
 require 'nokogiri'
+require 'open-uri'
 
 class TwitterScrapper
-  def initialize(url)
-    @url = url
-    @doc = Nokogiri::HTML(File.open(@url))
+  def initialize
+    @url = ARGV[0]
+    @doc = Nokogiri::HTML(open(@url))
   end
 
   def extract_username
@@ -35,14 +36,12 @@ class TwitterScrapper
   end
 end
 
-prueba = TwitterScrapper.new('twitter_account.html')
+prueba = TwitterScrapper.new
 
 prueba.extract_username
 prueba.extract_stats
 prueba.extract_tweets
 
 prueba.printer
-
-
 
 
