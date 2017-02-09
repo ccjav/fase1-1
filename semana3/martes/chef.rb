@@ -2,14 +2,11 @@ require 'sqlite3'
 
 class Chef
   def initialize(first_name, last_name, birthday, email, phone)
-    @first_name = first_name
-    @last_name = last_name
-    @birthday = birthday
-    @email = email
-    @phone = phone
-    # @created_at = created_at
-    # @updated_at = updated_at
-
+    @@first_name = first_name
+    @@last_name = last_name
+    @@birthday = birthday
+    @@email = email
+    @@phone = phone
   end
 
   def self.create_table
@@ -21,7 +18,9 @@ class Chef
           last_name VARCHAR(64) NOT NULL,
           birthday DATE NOT NULL,
           email VARCHAR(64) NOT NULL,
-          phone VARCHAR(64) NOT NULL
+          phone VARCHAR(64) NOT NULL,
+          created_at DATETIME NOT NULL,
+          updated_at DATETIME NOT NULL
         );
       SQL
     )
@@ -31,29 +30,23 @@ class Chef
     Chef.db.execute(
       <<-SQL
         INSERT INTO chefs
-          (first_name, last_name, birthday, email, phone)
+          (first_name, last_name, birthday, email, phone, created_at, updated_at)
         VALUES
-          (@first_name, @last_name, @birthday, @email, @phone);
+          ('Ferran', 'Adriá', '1985-02-09', 'ferran.adria@elbulli.com', '42381093238', DATETIME('now'), DATETIME('now'));
       SQL
     )
   end
 
-  def self.all
-    Chef.db.execute(
-      <<-SQL
-        SELECT * FROM chefs
-      SQL
-    )
+  def save
+    Chef.db.execute("insert into chefs (first_name, last_name, birthday, email, phone, created_at, updated_at) values (?, ?, ?, ?, ?, DATETIME('now'), DATETIME('now'))", @@first_name, @@last_name, @@birthday, @@email, @@phone)
   end
 
   def self.where(key, value)
-    # p key
-    # p value
-    Chef.db.execute(
-      <<-SQL
-        SELECT * FROM chefs WHERE "key" = "value"
-      SQL
-    )
+    Chef.db.execute("SELECT * FROM chefs WHERE #{key} = '#{value}'")
+  end
+
+  def self.delete(key, value)
+    Chef.db.execute("DELETE FROM chefs WHERE #{key} = '#{value}'")
   end
 
   private
@@ -63,8 +56,3 @@ class Chef
   end
 
 end
-
-# Chef.new('Juan', 'Lando', '1990-05-22', 'jualando@hotmail.com', '48232359671')
-# p Chef.all
-# Chef.seed
-# p Chef.where("id", 2)
