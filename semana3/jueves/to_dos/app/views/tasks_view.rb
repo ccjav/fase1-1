@@ -3,9 +3,7 @@ class TasksView
 
 	def index(tasks)
     new_array = []
-    tasks.each do |x|
-      new_array << x["tasks"]
-    end
+    tasks.each {|x|new_array << x["tasks"]}
     max_length = new_array.max_by { |x| x.length }.length
     puts "\e[#{7}m#{"#\t task#{"".ljust(max_length)}\tcompleted"}\e[0m "
     counter = 1
