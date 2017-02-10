@@ -1,58 +1,64 @@
 LAP_DISTANCE = 100.0
-#RaceCar class
+
 class RaceCar
 	def initialize
-		@laptimes = []
-		5.times { @laptimes <<  LAP_DISTANCE / rand(7.0..18.0)}
-		@avg_speed = (@laptimes.inject(:+) / 5).round(2)
-		# @hola
-	end
-
-	# def avg_speed
-	# 	@@avg_speed = @avg_speed
-	# end
+    @name = ["Force", "Power", "Passwater", "Banjo", "Duck"].sample  
+    @laptimes = []
+    5.times { @laptimes <<  LAP_DISTANCE / rand(7.0..18.0)}
+    @avg_speed = (@laptimes.inject(:+) / 5).round(2)
+    @car_level = car_level
+  end
 
 	def car_level
-		if average_speed < 7.0
-			"Principiante"
-		elsif average_speed < 8.0
-			"Normal"
-		elsif average_speed < 9.0
-			"Medio"
+		if @avg_speed < 7.0
+			@level = "Principiante"
+		elsif @avg_speed < 8.0
+			@level = "Normal"
+		elsif @avg_speed < 9.0
+			@level = "Medio"
 		else
-			"Avanzado"
+			@level = "Avanzado"
 		end
 	end
 end
-# hola = RaceCar.new
-# hola
-# p hola.average_speed
 # p hola.car_level
 
 #Team class
 class Team
 	def initialize(team)
 		@team = team
+    @@team = @team
 	end
 
 	def add_car(car)
-		Team.new(car)
+    @team << car
 	end
+
+  def team_size
+    @team.length
+  end
 
 	def average_speed_of_team
-		@team[0].instance_variable_get(:@laptimes)
+		(@team.map { |x| x.instance_variable_get(:@avg_speed) }.inject(:+) / @team.length).round(2)
 	end
-  #método para agregar nuevo race car
 
-
-  #método para calcular promedio de velocidad del equipo
-
-
+  def self.team
+    @@team
+  end
 end
 
-# #método para buscar race car
-# ...
+def search(name, team)
+  names = Team.team.map { |x| x.instance_variable_get(:@name) }
+  if names.include?(name)
+    "#{name} is a racer"
+  end
+end
 
+def table
+  # names = Team.car_level.map { |x| x.instance_variable_get(:@level) }
+  RaceCar.map { |x| x }#.car_level#.instance_variable_get(:@level)
+
+end
 # #método para generar la tabla
 # ...
 
@@ -60,14 +66,13 @@ end
 # ...
 
 
-# #instancias de RaceCar
 car1 = RaceCar.new
 car2 = RaceCar.new
 car3 = RaceCar.new
 car4 = RaceCar.new
 car5 = RaceCar.new
 car6 = RaceCar.new
-
+# p car1.car_level
 # #tests
 
 # p "car1: #{car1.average_speed} m/s"
@@ -87,10 +92,10 @@ car6 = RaceCar.new
 team1 = [car1, car2, car3, car4, car5]
 team_one = Team.new(team1)
 team_one.add_car(car6)
-p team_one.average_speed_of_team
+
 # #test para buscar race car en equipo team_one
 # p search("Power", team_one) == "Power is a racer"
-
+p table
 # #calculate average speed of team
 # p team_one.average_speed_of_team
 # #ej. 10.66
