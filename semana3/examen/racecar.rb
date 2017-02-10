@@ -8,9 +8,9 @@ class RaceCar
 		# @hola
 	end
 
-	def avg_speed
-		@@avg_speed = @avg_speed
-	end
+	# def avg_speed
+	# 	@@avg_speed = @avg_speed
+	# end
 
 	def car_level
 		if average_speed < 7.0
@@ -40,7 +40,7 @@ class Team
 	end
 
 	def average_speed_of_team
-		@team.each {|x| p x[1]}
+		@team[0].instance_variable_get(:@laptimes)
 	end
   #método para agregar nuevo race car
 
