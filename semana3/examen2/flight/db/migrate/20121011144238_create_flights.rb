@@ -21,7 +21,7 @@ class CreateFlights < ActiveRecord::Migration
       t.timestamps
     end
 
-    create_table :users_flights do |t|
+    create_table :user_flights do |t|
       t.integer :flight_id
       t.integer :user_id
 
