@@ -22,7 +22,7 @@ class RaceCar
 		end
 	end
 end
-# p hola.car_level
+
 
 #Team class
 class Team
@@ -57,14 +57,11 @@ end
 
 def table
   # names = Team.car_level.map { |x| x.instance_variable_get(:@level) }
-  RaceCar.map { |x| x }#.car_level#.instance_variable_get(:@level)
+  # RaceCar.map { |x| x }#.car_level#.instance_variable_get(:@level)
+
 
 end
-# #método para generar la tabla
-# ...
 
-# #método para mostrar nombre y nivel del race car
-# ...
 @name = ["Force", "Power", "Passwater", "Banjo", "Duck"].sample
 
 car1 = RaceCar.new("Force")
@@ -75,7 +72,6 @@ car5 = RaceCar.new("Duck")
 car6 = RaceCar.new("Thunder")
 # p car1.car_level
 # #tests
-
 # p "car1: #{car1.average_speed} m/s"
 # #ej. car1: 9.5 m/s
 # p "car2: #{car2.average_speed} m/s"
