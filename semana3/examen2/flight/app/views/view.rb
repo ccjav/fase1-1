@@ -1,7 +1,7 @@
 class View
 	# Recuerda que la única responsabilidad de la vista es desplegar data al usuario
   # Los siguientes métodos son sólo un ejemplo:
-  
+
 	def index
     puts "Bienvenido a Vuelos Codea"
     puts "1) Reservaciones"
@@ -14,7 +14,7 @@ class View
     puts "¡¡¡Bienvenido!!!"
     puts "1) Encuentra tu boleto de avión"
     puts "2) Salir"
-    puts "Selecciona una opción:" 
+    puts "Selecciona una opción:"
   end
 
   def admin
@@ -26,7 +26,7 @@ class View
     puts "¡¡¡Bienvenido!!!"
     puts "1) Encuentra tu boleto de avión"
     puts "2) Salir"
-    puts "Selecciona una opción:" 
+    puts "Selecciona una opción:"
   end
 
   def logged_admin
@@ -37,11 +37,17 @@ class View
     puts "4) Salir"
   end
 
-  def available_flights(counter, flight)
+  def flights(counter, flight)
     puts "#{counter}) " + "No Vuelo: " + flight["num_flight"].to_s
     puts "Date: " + flight["date"].to_s + ", Depart: " + flight["depart"].to_s + "UTC From: " + flight["from"].to_s
     puts "To: " + flight["to"].to_s + ", Duration: " + flight["duration"].to_s + ", Precio:" + flight["cost"].to_s + ", Lugares: " + flight["passengers"].to_s
     puts "-" * 35
+  end
+
+  def bookings(counter, booking)
+    puts "#{counter}) " + "Número de reservación: " + "#{booking["num_booking"]}"
+    puts "Número de vuelo: " + "#{booking["flight_id"]}"
+    puts "Precio total: " + "#{booking["total"]}"
   end
 
   def create

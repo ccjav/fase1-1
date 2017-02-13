@@ -56,23 +56,33 @@ class Controller
     counter = 1
     flight_query_array.each do |flight|
       if flight_query[3].to_i <= flight["passengers"]
-        @view.available_flights(counter, flight)
+        @view.fligts(counter, flight)
         flight_options << flight["num_flight"]
         counter += 1
       end
     end
-    p flight_options
-    puts "Selecciona tu vuelo:"
-
-    user_info(flight_query, flight_options, counter)
+    counter -= 1
+    if counter > 0
+      choose_flight(flight_query, flight_options, counter)
+    else
+      puts "No hay vuelos disponibles."
+      puts "Nueva búsqueda:"
+      make_reservation
+    end
   end
 
-  def user_info(flight_query, flight_options, counter)
+  def choose_flight(flight_query, flight_options, counter)
+    puts "Selecciona tu vuelo:"
     while true
-      flight_choice = STDIN.gets.chomp
-      break if (flight_choice.to_i.is_a? Integer) && (flight_choice.to_i <= counter - 1) && (flight_choice.to_i != 0)
+      flight_choice = STDIN.gets.chomp.to_i
+      break if (flight_choice <= counter) && (flight_choice != 0)
       @view.error
     end
+    present_flight = (Flight.where(num_flight: flight_options[flight_choice - 1]))[0]
+    user_info(present_flight, flight_query)
+  end
+
+  def user_info(present_flight, flight_query)
     users_ids = []
     flight_query[3].to_i.times do |i|
       puts "Datos de persona " + "#{(i + 1)}" + ":"
@@ -84,42 +94,50 @@ class Controller
       present_user = User.where(name: name, email: email, admin: false)
       users_ids << present_user[0]["id"]
     end
-    puts "Realizar reservación: SI / NO"
+    puts "¿Realizar reservación? SI / NO"
     while true
       @booking_choice = STDIN.gets.chomp
       break if @booking_choice == 'si' || @booking_choice == 'SI' || @booking_choice == 'NO' || @booking_choice == 'no'
       @view.error
     end
     if @booking_choice == 'si' || @booking_choice == 'SI'
-      create_booking(flight_options, flight_choice, flight_query, users_ids)
-      create_user_flight(flight_options, flight_choice, flight_query, users_ids)
+      create_booking(present_flight, flight_query, users_ids)
+      create_user_flight(present_flight, flight_query, users_ids)
     elsif @booking_choice == 'no' || @booking_choice == 'NO'
       index
     end
   end
 
-  def create_booking(flight_options, flight_choice, flight_query, users_ids)
-    present_flight = Flight.where(num_flight: flight_options[flight_choice.to_i - 1])
-    total_cost = present_flight[0]["cost"].to_i * flight_query[3].to_i
+  def create_booking(present_flight, flight_query, users_ids)
+    total_cost = present_flight["cost"].to_i * flight_query[3].to_i
     book_num = "#{rand(1000..2000)}-#{rand(0..9)}"
-    Booking.create(num_booking: book_num, flight_id: present_flight[0]["id"], total: total_cost)
-    present_booking = Booking.where(num_booking: book_num, flight_id: present_flight[0]["id"], total: total_cost)
+    Booking.create(num_booking: book_num, flight_id: present_flight["id"], total: total_cost)
+    present_booking = Booking.where(num_booking: book_num, flight_id: present_flight["id"], total: total_cost)
     flight_query[3].to_i.times do |i|
       UserBooking.create(id_bookings: present_booking[0]["id"], id_users: users_ids[i])
     end
   end
 
-  def create_user_flight(flight_options, flight_choice, flight_query, users_ids)
-    present_flight = Flight.where(num_flight: flight_options[flight_choice.to_i - 1])
+  def create_user_flight(present_flight, flight_query, users_ids)
     flight_query[3].to_i.times do |i|
-      UserFlight.create(flight_id: present_flight[0]["id"], user_id: users_ids[i])
+      UserFlight.create(flight_id: present_flight["id"], user_id: users_ids[i])
     end
   end
 
   def admin
-    @choice = STDIN.gets.chomp
+    while true
+      choice = STDIN.gets.chomp
+      break if User.exists?(name: choice , admin: true)
+      @view.error
+    end
+
     puts "Ingrese contraseña:"
-    @choice = STDIN.gets.chomp
+    while true
+      choice = STDIN.gets.chomp
+      break if choice == "password"
+      @view.error
+    end
+
     @view.logged_admin
     logged_admin
   end
@@ -131,9 +149,24 @@ class Controller
       @view.error
     end
     if @choice == '1'
-      p Flight.all
+      counter = 1
+      all_flights = Flight.all
+      all_flights.each do |flight|
+        @view.fligts(counter, flight)
+        counter += 1
+      end
+      @view.logged_admin
+      logged_admin
     elsif @choice == '2'
-      p Booking.all
+      puts "Reservaciones:"
+      counter = 1
+      booked_flights = Booking.all
+      booked_flights.each do |booking|
+        @view.bookings(counter, booking)
+        counter += 1
+      end
+      @view.logged_admin
+      logged_admin
     elsif @choice == '3'
       add
     end
