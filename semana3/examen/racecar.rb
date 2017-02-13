@@ -1,13 +1,14 @@
 LAP_DISTANCE = 100.0
 
 class RaceCar
-	def initialize
-    @name = ["Force", "Power", "Passwater", "Banjo", "Duck"].sample  
-    @laptimes = []
-    5.times { @laptimes <<  LAP_DISTANCE / rand(7.0..18.0)}
-    @avg_speed = (@laptimes.inject(:+) / 5).round(2)
-    @car_level = car_level
-  end
+	attr_reader :name, :car_level
+	def initialize(name)
+	    @name = name
+	    @laptimes = []
+	    5.times { @laptimes <<  LAP_DISTANCE / rand(7.0..18.0)}
+	    @avg_speed = (@laptimes.inject(:+) / 5).round(2)
+	    @car_level = car_level
+	  end
 
 	def car_level
 		if @avg_speed < 7.0
@@ -64,14 +65,14 @@ end
 
 # #método para mostrar nombre y nivel del race car
 # ...
+@name = ["Force", "Power", "Passwater", "Banjo", "Duck"].sample
 
-
-car1 = RaceCar.new
-car2 = RaceCar.new
-car3 = RaceCar.new
-car4 = RaceCar.new
-car5 = RaceCar.new
-car6 = RaceCar.new
+car1 = RaceCar.new("Force")
+car2 = RaceCar.new("Power")
+car3 = RaceCar.new("Passwater")
+car4 = RaceCar.new("Banjo")
+car5 = RaceCar.new("Duck")
+car6 = RaceCar.new("Thunder")
 # p car1.car_level
 # #tests
 
